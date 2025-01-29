@@ -100,3 +100,5 @@ app/
     - urls.py [ manually create ] - file
     - templates [ create manually ] - dir
         - app [ create manually ] - dir
+    - static [ create manually ] - dir
+        - app [ create manually ] - dir
