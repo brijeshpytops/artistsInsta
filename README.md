@@ -102,3 +102,10 @@ app/
         - app [ create manually ] - dir
     - static [ create manually ] - dir
         - app [ create manually ] - dir
+
+
+- Prepare Django form
+s-1] <form action="" method="post" enctype="multipart/form-data">
+s-2] {% csrf_token %}
+s-3] make sure all input fields have name attribut with unique name
+s-4] button type submit

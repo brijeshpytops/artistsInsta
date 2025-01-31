@@ -1,0 +1,36 @@
+{% extends 'blogs/auth_base.html' %}
+{% load static %}
+{% block title %} Login {% endblock %}
+{% block style %} {% endblock %}
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center my-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center fs-3 fw-bold">Login</div>
+                <div class="card-body">
+                    <form action="{% url 'login' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Example@gmail.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'forgot_password' %}" class="text-decoration-none">Forgot Password?</a>
+                            <span>Don't have an account? <a href="{% url 'register' %}">Register here</a></span>
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
