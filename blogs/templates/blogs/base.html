@@ -72,6 +72,9 @@
             <li><a href="{% url 'about_view' %}">About</a></li>
             <li><a href="{% url 'contact_view' %}">Contact</a></li>
           </ul>
+          <!-- set logout button -->
+          <li style="list-style-type: none;"><a class="btn btn-dark" href="{% url 'logout' %}">Logout</a></li>
+          </ul>
         </nav>
 
         <div class="colorlib-footer">
@@ -104,7 +107,6 @@
       </aside>
     </div>
     <!-- END COLORLIB-ASIDE -->
-
     {% block content %} {% endblock %}
 
     <script src="{% static 'blogs/js/jquery.min.js' %}"></script>
