@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
+from django.core.mail import send_mail
+from django.conf import settings
 
 from functools import wraps
 
 from .models import Artist
+
+import random
 
 # Create your views here.
 def artist_login_required(view_func):
@@ -106,9 +110,69 @@ def register(request):
     return render(request, 'blogs/register.html')
 
 def forgot_password(request):
+    if request.method == 'POST':
+        email_ = request.POST['email']
+        get_artist = Artist.objects.filter(email=email_).exists()
+        if get_artist:
+            artist = Artist.objects.get(email=email_)
+            otp_ = random.randint(1111, 9999)
+            subject = 'Reset Password OTP Code | ArtistBlogs'
+            message = f"""
+            Hello {artist.first_name} {artist.last_name}
+
+            We have received a request to reset your password. Please use the OTP code below to complete the process.
+
+            OTP Code: {otp_}
+
+            If you did not request this password reset, please ignore this message.
+
+            Regards,
+            ArtistBlogs Team
+            """
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = [f'{email_}']
+            send_mail(subject, message, from_email, recipient_list)
+            artist.otp =  otp_
+            artist.save()
+            messages.success(request, f'An OTP has been sent to your registered mobile number.')
+            return render(
+                request,
+                'blogs/otp-verify.html',
+                {'email':email_}
+            )
+        else:
+            messages.info(request, f'"{email_}" is not registered. Please try with a different one.')
+            return redirect('forgot_password')
     return render(request, 'blogs/forgot-password.html')
 
 def otp_verify(request):
+    if request.method == 'POST':
+        otp_ = request.POST['otp']
+        email_ = request.POST['email']
+        new_password_ = request.POST['new_password']
+        confirm_password_ = request.POST['confirm_password']
+        artist = Artist.objects.get(email=email_)
+        
+        if artist.otp == otp_:
+            if new_password_!= confirm_password_:
+                messages.info(request, 'Password and Confirm Password do not match.')
+                return render(
+                    request,
+                    'blogs/otp-verify.html',
+                    {'email':email_}
+                )
+            else:
+                artist.password = make_password(new_password_)
+                artist.save()
+                messages.success(request, 'Password has been changed successfully.')
+                return redirect('login')
+        else:
+            messages.info(request, 'Incorrect OTP. Please try again.')
+            return render(
+                request,
+                'blogs/otp-verify.html',
+                {'email':email_}
+            )
     return render(request, 'blogs/otp-verify.html')
 
 def logout(request):

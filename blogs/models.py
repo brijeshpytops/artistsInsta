@@ -35,6 +35,7 @@ class Artist(BaseClass):
         null=False,
         blank=False,
     )
+    otp = models.CharField(default='1111', max_length=6)
 
     
         

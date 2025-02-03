@@ -32,8 +32,10 @@
                 </div>
                 {% endif %}
                 <div class="card-body">
-                    <form action="" method="post">
+                    <form action="{% url 'otp_verify' %}" method="post">
                         {% csrf_token %}
+
+                        <input type="hidden" name="email" value="{{email}}">
                         
                         <div class="mb-3">
                             <label for="otp" class="form-label">Enter OTP</label>
