@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>{% block title %} {% endblock %} | ARTIST-BLOGS</title>
+    <title>{% block title %} {% endblock %} | ARTIST-INSTA</title>
     <meta charset="utf-8" />
     <meta
       name="viewport"
@@ -62,13 +62,13 @@
         class="js-fullheight text-center"
       >
         <h1 id="colorlib-logo">
-          <a href="{% url 'home_view' %}">Artist<span>.</span></a>
+          <a href="{% url 'home_view' %}">Artist<span>.Insta</span></a>
         </h1>
         <nav id="colorlib-main-menu" role="navigation">
           <ul>
             <li class="colorlib-active"><a href="{% url 'home_view' %}">Home</a></li>
             <li><a href="{% url 'photography_view' %}">Photography</a></li>
-            <li><a href="{% url 'blogs_view' %}">Blogs</a></li>
+            <li><a href="{% url 'posts_view' %}">Posts</a></li>
             <li><a href="{% url 'about_view' %}">About</a></li>
             <li><a href="{% url 'contact_view' %}">Contact</a></li>
           </ul>

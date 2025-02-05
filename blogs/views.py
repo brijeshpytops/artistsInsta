@@ -6,7 +6,7 @@ from django.conf import settings
 
 from functools import wraps
 
-from .models import Artist
+from .models import Artist, Post
 
 import random
 
@@ -193,8 +193,28 @@ def photography_view(request):
     return render(request, 'blogs/photography.html')
 
 @artist_login_required
-def blogs_view(request):
-    return render(request, 'blogs/blogs.html')
+def posts_view(request):
+    if request.method == 'POST':
+        artist_id = request.session['artist_id']
+        img_ = request.FILES.get('post_img')
+        tag_ = request.POST['post_tag']
+        title_ = request.POST['post_title']
+        content_ =request.POST['content']
+
+        new_post = Post.objects.create(
+            artist_id=artist_id,
+            post_img=img_,
+            post_tag=tag_,
+            post_title=title_,
+            content=content_
+        )
+        new_post.save()
+        messages.success(request, 'Post has been created successfully.')
+        return redirect('posts_view')
+    
+    get_posts = Post.objects.all().order_by('-created_at')
+    context = {'posts': get_posts}
+    return render(request, 'blogs/posts.html', context)
 
 @artist_login_required
 def about_view(request):

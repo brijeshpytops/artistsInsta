@@ -38,4 +38,32 @@ class Artist(BaseClass):
     otp = models.CharField(default='1111', max_length=6)
 
     
+class Post(BaseClass):
+    artist = models.ForeignKey(
+        Artist,
+        on_delete=models.CASCADE,
+        related_name='posts',
+    )
+    post_img = models.ImageField(
+        upload_to='posts/',
+        null=False,
+        blank=False,
+    )
+    post_tag = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False,
+    )
+    post_title = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False,
+    )
+    content = models.TextField(
+        null=False,
+        blank=False,
+    )
+
+    
+
         
