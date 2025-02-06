@@ -64,6 +64,51 @@ class Post(BaseClass):
         blank=False,
     )
 
+
+class Photography(BaseClass):
+    artist = models.ForeignKey(
+        Artist,
+        on_delete=models.CASCADE,
+        related_name='photographies',
+    )
+    photo_img = models.ImageField(
+        upload_to='photographies/',
+        null=False,
+        blank=False,
+    )
+    photo_tag = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False,
+    )
+
+class Contacts(BaseClass):
+    artist = models.ForeignKey(
+        Artist,
+        on_delete=models.CASCADE,
+        related_name='contacts',
+    )
+    name = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False,
+    )
+    email = models.EmailField(
+        max_length=255,
+        null=False,
+        blank=False,
+    )
+    subject = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False,
+    )
+    message = models.TextField(
+        null=False,
+        blank=False,
+    )
+
+
     
 
         
