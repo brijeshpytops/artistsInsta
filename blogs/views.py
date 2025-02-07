@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
@@ -6,7 +6,8 @@ from django.conf import settings
 
 from functools import wraps
 
-from .models import Artist, Post, Photography, Contacts
+from .models import Artist, ArtistProfile, Post, Photography, Contacts
+from .forms import ArtistProfileForm
 
 import random
 
@@ -233,9 +234,42 @@ def posts_view(request):
     return render(request, 'blogs/posts.html', context)
 
 @artist_login_required
-def about_view(request):
-    return render(request, 'blogs/about.html')
+def profile_view(request):
+    artist_id = request.session['artist_id']
+    artist = get_object_or_404(Artist, art_id=artist_id)
+    
+    # Try to get the artist profile, if not exist, create a blank instance
+    profile, created = ArtistProfile.objects.get_or_create(artist=artist)
+
+    if request.method == "POST":
+        form = ArtistProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect("artist_profile", artist_id=artist.id)  # Adjust the redirect URL name
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = ArtistProfileForm(instance=profile)
+    return render(request, "blogs/profile.html", {"form": form, "artist": artist})
 
 @artist_login_required
 def contact_view(request):
+    artist_id = request.session['artist_id']
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+
+        new_qry = Contacts.objects.create(
+            artist_id=artist_id,
+            name=name,
+            email=email,
+            subject=subject,
+            message=message
+        )
+        new_qry.save()
+        messages.success(request, 'Your query has been submitted successfully.')
+        return redirect('contact_view')
     return render(request, 'blogs/contact.html')

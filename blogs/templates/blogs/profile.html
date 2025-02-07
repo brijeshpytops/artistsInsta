@@ -1,0 +1,84 @@
+{% extends 'blogs/base.html' %}
+{% load static %}
+
+{% block title %} Profile {% endblock %}
+
+{% block style %}
+<style>
+  .profile-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .profile-form,
+  .profile-info {
+    width: 48%;
+  }
+
+  .hero-wrap {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div id="colorlib-main" class="container py-5">
+  <div class="profile-container row">
+
+    <!-- Profile Info Section -->
+    <div class="profile-info col-md-7">
+      <div class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url({% static 'images/bg_4.jpg' %})"
+        data-stellar-background-ratio="0.5">
+        <div class="overlay"></div>
+        <div class="js-fullheight d-flex justify-content-center align-items-center">
+          <div class="col-md-10 text text-center">
+            <div class="img mb-4"
+              style="background-image: url({% static 'images/author.jpg' %}); width: 150px; height: 150px; background-size: cover; border-radius: 50%; margin: 0 auto;">
+            </div>
+            <div class="desc">
+              <h2 class="subheading">Hello I'm</h2>
+              <h1 class="mb-4">
+                {{ request.session.first_name|title }} {{ request.session.last_name|title }}
+              </h1>
+              <p class="mb-4">
+                I am A Blogger. Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
+                there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a
+                large language ocean.
+              </p>
+              <ul class="ftco-social mt-3">
+                <li class="ftco-animate">
+                  <a href="#"><span class="icon-twitter"></span></a>
+                </li>
+                <li class="ftco-animate">
+                  <a href="#"><span class="icon-facebook"></span></a>
+                </li>
+                <li class="ftco-animate">
+                  <a href="#"><span class="icon-instagram"></span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Form Section -->
+    <div class="profile-form col-md-4">
+      <h2>{% if artist.profile %}Edit{% else %}Create{% endif %} Profile for {{ artist.name }}</h2>
+      <form action="{% url 'profile_view' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save Profile</button>
+      </form>
+    </div>
+
+
+
+  </div>
+</div>
+
+{% endblock %}

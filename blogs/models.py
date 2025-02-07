@@ -37,6 +37,39 @@ class Artist(BaseClass):
     )
     otp = models.CharField(default='1111', max_length=6)
 
+class ArtistProfile(BaseClass):
+    artist = models.OneToOneField(
+        Artist,
+        on_delete=models.CASCADE,
+        related_name='profile',
+    )
+    profile = models.ImageField(
+        upload_to='Artist-profiles/',
+        null=False,
+        blank=False,
+    )
+    bio = models.TextField(
+        null=False,
+        blank=False,
+    )
+    date_of_birth = models.DateField(
+        null=True,
+        blank=True,
+    )
+    twiiter = models.URLField(
+        null=True,
+        blank=True,
+    )
+    facebook = models.URLField(
+        null=True,
+        blank=True,
+    )
+    instagram = models.URLField(
+        null=True,
+        blank=True,
+    )
+    
+
     
 class Post(BaseClass):
     artist = models.ForeignKey(
