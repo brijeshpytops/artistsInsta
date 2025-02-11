@@ -246,12 +246,12 @@ def profile_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Profile updated successfully!")
-            return redirect("artist_profile", artist_id=artist.id)  # Adjust the redirect URL name
+            return redirect("profile_view")  # Adjust the redirect URL name
         else:
             messages.error(request, "Please correct the errors below.")
     else:
         form = ArtistProfileForm(instance=profile)
-    return render(request, "blogs/profile.html", {"form": form, "artist": artist})
+    return render(request, "blogs/profile.html", {"form": form, "artist": artist, "profile":profile})
 
 @artist_login_required
 def contact_view(request):

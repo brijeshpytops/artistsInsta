@@ -109,3 +109,37 @@ s-1] <form action="" method="post" enctype="multipart/form-data">
 s-2] {% csrf_token %}
 s-3] make sure all input fields have name attribut with unique name
 s-4] button type submit
+
+
+# send SMS
+
+pip install twilio
+------------------------------------------
+
+from twilio.rest import Client
+
+# Your Account SID and Auth Token from twilio.com/console
+account_sid = 'your_account_sid'
+auth_token = 'your_auth_token'
+
+# Initialize the Twilio client
+client = Client(account_sid, auth_token)
+
+def send_sms(receiver_number, message_body):
+    try:
+        # Send SMS
+        message = client.messages.create(
+            body=message_body,
+            from_='your_twilio_phone_number',
+            to=receiver_number
+        )
+        print(f"Message sent successfully to {receiver_number}. SID: {message.sid}")
+        return True
+    except Exception as e:
+        print(f"Failed to send SMS to {receiver_number}. Error: {str(e)}")
+        return False
+
+# Example usage
+receiver_number = '+1234567890'  # Replace with the recipient's phone number
+message_body = 'Hello from Twilio!'
+send_sms(receiver_number, message_body)

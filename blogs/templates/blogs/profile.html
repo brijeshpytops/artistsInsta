@@ -36,8 +36,8 @@
         <div class="overlay"></div>
         <div class="js-fullheight d-flex justify-content-center align-items-center">
           <div class="col-md-10 text text-center">
-            <div class="img mb-4"
-              style="background-image: url({% static 'images/author.jpg' %}); width: 150px; height: 150px; background-size: cover; border-radius: 50%; margin: 0 auto;">
+            <div class="img mb-4" style="background-image: url({% if artist.profile.profile %}{{ artist.profile.profile.url }}{% else %}{% static 'images/author.jpg' %}{% endif %}); 
+           width: 150px; height: 150px; background-size: cover; border-radius: 50%; margin: 0 auto;">
             </div>
             <div class="desc">
               <h2 class="subheading">Hello I'm</h2>
@@ -45,19 +45,19 @@
                 {{ request.session.first_name|title }} {{ request.session.last_name|title }}
               </h1>
               <p class="mb-4">
-                I am A Blogger. Far far away, behind the word mountains, far from the countries Vokalia and Consonantia,
-                there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a
-                large language ocean.
+                {% if profile.bio %}
+                {{ profile.bio }}
+                {% endif %}
               </p>
               <ul class="ftco-social mt-3">
                 <li class="ftco-animate">
-                  <a href="#"><span class="icon-twitter"></span></a>
+                  <a href="{{profile.twitter}}" target="_blank"><span class="icon-twitter"></span></a>
                 </li>
                 <li class="ftco-animate">
-                  <a href="#"><span class="icon-facebook"></span></a>
+                  <a href="{{profile.facebook}}" target="_blank"><span class="icon-facebook"></span></a>
                 </li>
                 <li class="ftco-animate">
-                  <a href="#"><span class="icon-instagram"></span></a>
+                  <a href="{{profile.instagram}}" target="_blank"><span class="icon-instagram"></span></a>
                 </li>
               </ul>
             </div>
@@ -68,7 +68,8 @@
 
     <!-- Profile Form Section -->
     <div class="profile-form col-md-4">
-      <h2>{% if artist.profile %}Edit{% else %}Create{% endif %} Profile for {{ artist.name }}</h2>
+      <h2>PROFILE</h2>
+
       <form action="{% url 'profile_view' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}

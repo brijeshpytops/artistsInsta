@@ -56,7 +56,7 @@ class ArtistProfile(BaseClass):
         null=True,
         blank=True,
     )
-    twiiter = models.URLField(
+    twitter = models.URLField(
         null=True,
         blank=True,
     )
