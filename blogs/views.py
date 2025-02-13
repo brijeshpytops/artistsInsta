@@ -187,7 +187,16 @@ def logout(request):
 
 @artist_login_required
 def home_view(request):
-    return render(request, 'blogs/home.html')
+    artist_id = request.session['artist_id']
+    artist = get_object_or_404(Artist, art_id=artist_id)
+    profile, created = ArtistProfile.objects.get_or_create(artist=artist)
+
+    get_posts = Post.objects.all().order_by('-created_at')
+
+    get_works = Photography.objects.filter(artist_id=artist_id).order_by('-created_at')
+    
+    context = {'artist': artist, 'profile':profile, 'posts': get_posts[:4], 'works': get_works[:4]}
+    return render(request, 'blogs/home.html', context)
 
 @artist_login_required
 def photography_view(request):
