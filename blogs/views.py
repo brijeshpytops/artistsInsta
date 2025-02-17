@@ -3,13 +3,18 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.mail import send_mail
 from django.conf import settings
+from rest_framework import viewsets
 
 from functools import wraps
 
-from .models import Artist, ArtistProfile, Post, Photography, Contacts
+from .models import Artist, ArtistProfile, Post, Photography, Contacts, postComment
 from .forms import ArtistProfileForm
+from .serializers import PostCommentSerializer
 
 import random
+import requests
+
+LOCAL_HOST = 'http://127.0.0.1:8000'
 
 # Create your views here.
 def artist_login_required(view_func):
@@ -24,7 +29,6 @@ def artist_login_required(view_func):
             )
             return redirect('login')  # Redirect to login if not authenticated
     return wrapper
-
 
 def validate_password(request, password_):
     # List of validation checks with corresponding error messages
@@ -243,6 +247,32 @@ def posts_view(request):
     return render(request, 'blogs/posts.html', context)
 
 @artist_login_required
+def add_post_comment(request):
+    artist_id = request.session['artist_id']
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        comment_ = request.POST['comment']
+
+        listAPIurl = f'{LOCAL_HOST}/api/comments/'
+
+        new_comment = {
+            "comment_user": str(artist_id),
+            "comment_post": str(post_id),
+            "comment_text": comment_
+        }
+
+        response = requests.post(listAPIurl, json=new_comment)
+
+        if response.status_code == 201:
+            created_post_comment = response.json()
+            print()
+            messages.success(request, f"Successfully created new post with ID: {created_post_comment['art_id']}")
+            return redirect('posts_view')  # Adjust the redirect URL name
+        else:
+            messages.error(request, f"Failed to create new post. Status code: {response.status_code}")
+            return redirect('posts_view')  # Adjust the redirect URL name
+
+@artist_login_required
 def profile_view(request):
     artist_id = request.session['artist_id']
     artist = get_object_or_404(Artist, art_id=artist_id)
@@ -282,3 +312,8 @@ def contact_view(request):
         messages.success(request, 'Your query has been submitted successfully.')
         return redirect('contact_view')
     return render(request, 'blogs/contact.html')
+
+
+class PostCommentViewSet(viewsets.ModelViewSet):
+    queryset = postComment.objects.all()
+    serializer_class = PostCommentSerializer

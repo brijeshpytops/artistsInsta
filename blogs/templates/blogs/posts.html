@@ -1,5 +1,11 @@
-{% extends 'blogs/base.html' %} {% load static %} {% block title %} Posts
-{% endblock %} {% block style %}
+{% extends 'blogs/base.html' %}
+{% load static %}
+
+{% block title %}
+Posts
+{% endblock %}
+
+{% block style %}
 <style>
     body {
         background-color: #fafafa;
@@ -11,7 +17,9 @@
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     }
 </style>
-{% endblock %} {% block content %}
+{% endblock %}
+
+{% block content %}
 <div id="colorlib-main">
     <section class="ftco-section">
         <div class="container">
@@ -21,19 +29,7 @@
                     {% if messages %}
                     <div class="container mt-3">
                         {% for message in messages %}
-                        {% if message.tags == 'debug' %}
-                            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
-                        {% elif message.tags == 'info' %}
-                            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                        {% elif message.tags == 'success' %}
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {% elif message.tags == 'warning' %}
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        {% elif message.tags == 'error' %}
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {% else %}
-                            <div class="alert alert-primary alert-dismissible fade show" role="alert"> <!-- Default fallback -->
-                        {% endif %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                             {{ message }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
@@ -41,8 +37,8 @@
                     </div>
                     {% endif %}
                     <p>
-                        A small river named Duden flows by their place and supplies it with
-                        the necessary regelialia. It is a paradisematic country.
+                        A small river named Duden flows by their place and supplies it with the necessary regelialia. It
+                        is a paradisematic country.
                     </p>
                 </div>
             </div>
@@ -54,9 +50,8 @@
                         {% for post in posts %}
                         <div class="col-md-12">
                             <div class="blog-entry ftco-animate">
-                                <a href="#" class="img img-2" style="
-                                                        background-image: url({{ post.post_img.url }});
-                                                    "></a>
+                                <a href="#" class="img img-2"
+                                    style="background-image: url({{ post.post_img.url }});"></a>
                                 <div class="border text text-2 pt-2 mt-3 p-3 rounded">
                                     <span class="category mb-3 d-block">
                                         <a href="#">{{ post.post_tag }}</a>
@@ -64,16 +59,6 @@
                                     <h3 class="mb-4">
                                         <a href="#">{{ post.post_title }}</a>
                                     </h3>
-                                    <p class="mb-4">
-                                        <span class="short-content">
-                                            {{ post.content|truncatewords:20 }}
-                                        </span>
-                                        <span class="full-content d-none">
-                                            {{ post.content }}
-                                        </span>
-                                    </p>
-                                    <button class="btn btn-dark btn-sm read-more mb-3">Read
-                                        More</button>
                                     <div class="author mb-4 d-flex align-items-center">
                                         <div class="ml-3 info">
                                             <span>Written by</span>
@@ -83,19 +68,79 @@
                                             </h3>
                                         </div>
                                     </div>
+                                    <p class="mb-4">
+                                        <span class="short-content">
+                                            {{ post.content|truncatewords:20 }}
+                                        </span>
+                                        <span class="full-content d-none">
+                                            {{ post.content }}
+                                        </span>
+                                    </p>
+                                    
+                                    <!-- Comment Icon -->
+                                    <div class="d-flex align-items-between">
+                                        <button class="btn btn-dark btn-sm read-more mb-3 me-3">Read More</button>
+                                        <button class="btn btn-dark btn-sm read-more mb-3" data-bs-toggle="modal"
+                                            data-bs-target="#commentModal-{{ post.art_id }}">
+                                            <i class="bi bi-chat-left-text"></i> Comment
+                                        </button>
+                                    </div>
+
+                                    <!-- Display Comments for This Post -->
+                                    <div class="comments-section">
+                                        <h5>Comments</h5>
+                                        {% if post.comments.all %}
+                                            <ul class="list-unstyled">
+                                                {% for comment in post.comments.all %}
+                                                    <li class="comment">
+                                                        <p><strong>{{ comment.comment_user.first_name }} {{ comment.comment_user.last_name }}</strong> - {{ comment.created_at }}</p>
+                                                        <p>{{ comment.comment_text }}</p>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <p>No comments yet. Be the first to comment!</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal for Comment -->
+                        <!-- Modal for Comment -->
+                        <div class="modal fade" id="commentModal-{{ post.art_id }}" tabindex="-1"
+                            aria-labelledby="commentModalLabel-{{ post.art_id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="commentModalLabel-{{ post.art_id }}">Leave a Comment
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST" action="{% url 'add_post_comment' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="post_id" value="{{ post.art_id }}">
+                                            <div class="mb-3">
+                                                <label for="comment-{{ post.art_id }}" class="form-label">Your Comment</label>
+                                                <textarea class="form-control" id="comment-{{ post.art_id }}" name="comment" rows="4" required></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-dark">Submit Comment</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         {% endfor %}
                         {% else %}
-
                         <div class="alert alert-info" role="alert">
                             No posts found.
-
                         </div>
                         {% endif %}
                     </div>
                 </div>
+
                 <div class="col-lg-4">
                     <div class="form-container">
                         <h3 class="text-center mb-4">Create a Post</h3>
@@ -125,6 +170,7 @@
         </div>
     </section>
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".read-more").forEach(function (button) {
@@ -142,4 +188,5 @@
         });
     });
 </script>
+
 {% endblock %}

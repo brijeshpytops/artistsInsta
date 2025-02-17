@@ -37,6 +37,9 @@ class Artist(BaseClass):
     )
     otp = models.CharField(default='1111', max_length=6)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
 class ArtistProfile(BaseClass):
     artist = models.OneToOneField(
         Artist,
@@ -96,6 +99,29 @@ class Post(BaseClass):
         null=False,
         blank=False,
     )
+
+    def __str__(self):
+        return f"{self.artist.first_name} {self.artist.last_name} - {self.post_title}"
+
+class postComment(BaseClass):
+    comment_user = models.ForeignKey(
+        Artist,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    comment_post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    comment_text = models.TextField(
+        null=False,
+        blank=False,
+    )
+
+    def __str__(self):
+        return f"{self.comment_user.first_name} {self.comment_user.last_name} - {self.comment_post.post_title}"
+
 
 
 class Photography(BaseClass):
