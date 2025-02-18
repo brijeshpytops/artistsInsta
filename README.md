@@ -110,6 +110,10 @@ s-2] {% csrf_token %}
 s-3] make sure all input fields have name attribut with unique name
 s-4] button type submit
 
+- collect statci files in base dir:
+
+([myvenv]).../([repoName])>>> python manage.py collectstatic
+
 
 # send SMS
 
