@@ -14,8 +14,8 @@ from .serializers import PostCommentSerializer
 import random
 import requests
 
-LOCAL_HOST = 'http://127.0.0.1:8000'
-
+# LOCAL_HOST = 'http://127.0.0.1:8000'
+PRODUCTION_HOST = 'https://artinsta.pythonanywhere.com'
 # Create your views here.
 def artist_login_required(view_func):
     @wraps(view_func)
@@ -253,7 +253,7 @@ def add_post_comment(request):
         post_id = request.POST.get('post_id')
         comment_ = request.POST['comment']
 
-        listAPIurl = f'{LOCAL_HOST}/api/comments/'
+        listAPIurl = f'{PRODUCTION_HOST}/api/comments/'
 
         new_comment = {
             "comment_user": str(artist_id),
